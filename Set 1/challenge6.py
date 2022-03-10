@@ -31,7 +31,7 @@ def transpose_ciphertext(ciphertext, key_size):
         transposed_list[i] = ciphertext[i::key_size]
     return transposed_list
 
-def known_ciphertext_xor_cryptanalysis(ciphertext, max_key_length, hamming_distance_accuracy, num_best_key_lengths):
+def known_ciphertext_xor_cryptanalysis(ciphertext, max_key_length=40, hamming_distance_accuracy=4, num_best_key_lengths=10):
     key_length_likelihoods = get_key_length_likelihoods(ciphertext, max_key_length, hamming_distance_accuracy)
     key_length_likelihoods_sorted = {key: value for key, value in sorted(key_length_likelihoods.items(), key=lambda item: item[1])}
     num_best_key_lengths_list = list(key_length_likelihoods_sorted.keys())[:num_best_key_lengths]
@@ -52,4 +52,4 @@ def known_ciphertext_xor_cryptanalysis(ciphertext, max_key_length, hamming_dista
 
 f = open("challenge6.txt", "r")
 hex_data = base64_to_hex(f.read())
-known_ciphertext_xor_cryptanalysis(hex_data, max_key_length = 40, hamming_distance_accuracy = 4, num_best_key_lengths = 10)
+known_ciphertext_xor_cryptanalysis(hex_data)
