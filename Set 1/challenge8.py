@@ -12,3 +12,4 @@ def detect_aes_ecb_mode(file):
 
 f = open("challenge8.txt", "r")
 print(detect_aes_ecb_mode(f))
+f.close()

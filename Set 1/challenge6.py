@@ -52,4 +52,6 @@ def known_ciphertext_xor_cryptanalysis(ciphertext, max_key_length=40, hamming_di
 
 f = open("challenge6.txt", "r")
 hex_data = base64_to_hex(f.read())
-known_ciphertext_xor_cryptanalysis(hex_data)
+f.close()
+
+# known_ciphertext_xor_cryptanalysis(hex_data)

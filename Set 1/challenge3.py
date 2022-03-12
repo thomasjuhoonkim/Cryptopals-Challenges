@@ -27,14 +27,8 @@ def single_byte_xor_cryptanalysis(ciphertext):
         max(keys_dict, key = keys_dict.get), \
         max(plaintexts_dict.values())
 
-
 # hex_string = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-
 # a, b, c = single_byte_xor_cryptanalysis(binascii.unhexlify(hex_string))
 # print("Best plaintext: " + a.decode("utf8"))
 # print("Best key: " + chr(b))
 # print("Best key score: " + str(c))
-
-# print(bytes.fromhex(hex_string))
-# print(bytes.fromhex(hex_string).decode("utf-8"))
-# print(hex_string.encode("utf-8"))
