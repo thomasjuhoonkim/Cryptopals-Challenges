@@ -79,7 +79,28 @@ How? Devise some method for "scoring" a piece of English plaintext. Character fr
 Evaluate each output and choose the one with the best score.
 ------------------------------------------------------
 Solution:
-    
+    1. Two dictionaries are created for the purposes of keeping track of the different plaintexts
+       and the keys attempted for each plaintext. The values of both dictionaries are the score obtained
+       from the single-byte xor.
+    2. Each byte in the ASCII (extended - 256) charset is xor's against the ciphertext
+        2.1 Each key is extended to the length of the ciphertext
+        2.2 Each key is then xor'd against the ciphertext to obtain the plaintext
+        2.3 Each byte in the plaintext is evaluated based on the scoring method
+            2.3.1 A letter frequency dictionary is implemented. It contains the standard alphabet frequency in normal
+                  english texts with the key being the alphabet and the value being the percent frequency of the respective alpabet.
+            2.3.2 If the plaintext byte is a lowercase letter in the alphabet, the percent score is added
+            2.3.3 If the plaintext byte is an uppercase letter in the alphabet, the percent score is added with a 75% reduction in the score.
+                  (this is because in standard english text, capital letters do not appear frequently).
+        2.4 The total score for the plaintext is normalized by divinding it with the length of the ciphertext
+        2.5 For each byte in the final candidate plaintext,
+            2.5.1 If the byte is not a standard character used in english text, reduce the score by 5%.
+        2.6 Add the plaintext and key items to their respecitve dictionaries along with the score.
+    3. Return the plaintext and key with the maximum score.
+
+    - The function simply xor's the ciphertext with a key which consists of a sinlge repeated byte in the ASCII charset of 256.
+    - It then scores each resulting plaintext based on the letter frequency distribution, then validates the score by checking it's consistency of valid
+      english characters.
+    - It then returns the plaintext and key with the maximum scores.
 """
 
 reference_letter_freq_dict = {"E": 11.1607, "A": 8.4966, "R": 7.5809, "I": 7.5448, "O": 7.1635, "T": 6.5909, "N": 6.6544, "S": 5.7351, "L": 5.4893, "C": 4.5388, "U": 3.6308, "D": 3.3844,
@@ -101,7 +122,7 @@ def single_byte_xor_cryptanalysis(ciphertext):
                 score += reference_letter_freq_dict[char] * 0.75
         score /= len(ciphertext)
         for pt_byte in candidate_plaintext:
-            if chr(pt_byte) in string.ascii_lowercase + " !,./?'\"\n":
+            if chr(pt_byte) not in string.ascii_lowercase + " !,./?'\"\n":
                 score *= 0.95
         plaintexts_dict[candidate_plaintext] = score
         keys_dict[key_byte] = score
@@ -124,6 +145,12 @@ Challenge 4 - Detect single-charactar XOR'd ciphertext and cryptanalyze
 One of the 60-character strings in this file (challenge4.txt) has been encrypted by single-character XOR.
 Find it.
 (Your code from #3 should help.)
+-----------------------------------------------------------------------
+Solution:
+    - The single-byte-xor-crypanalysis function from challenge 3 is repeadetly called 60 times for each hexadecimal byte array
+      in the file. The returned values are compiled in two larger dictionaries and the maximum of scores of those dictionaries are printed.
+    - The plaintext with the highest score is returned, the plaintext that closely matches the letter frequency profile along with validation
+      will have the maximum score, eliminating the possibility of random plaintexts with gibberish english output.
 """
 
 "Code for solution"
@@ -164,6 +191,11 @@ It should come out to:
     a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f
 Encrypt a bunch of stuff using your repeating-key XOR function. Encrypt your mail.
 Encrypt your password file. Your .sig file. Get a feel for it. I promise, we aren't wasting your time with this.
+-------------------------------------------------------
+Solution:
+    - The key is expanded to match the length of the plaintext.
+    - Key expansion is done by utilizing the modulus operator and allows the leftover bytes of a whole word key expansion
+      to be cut off.
 """
 
 
@@ -206,6 +238,9 @@ For each block, the single-byte XOR key that produces the best looking histogram
 Put them together and you have the key.
 This code is going to turn out to be surprisingly useful later on. Breaking repeating-key XOR ("Vigenere") statistically is obviously an academic exercise, a "Crypto 101" thing.
 But more people "know how" to break it than can actually break it, and a similar technique breaks something much more important.
+-------------------------------------------------------
+Solution:
+    ...
 """
 
 
