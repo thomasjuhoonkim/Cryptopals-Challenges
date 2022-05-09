@@ -25,18 +25,20 @@ def encrypt_ecb_or_cbc_oracle(plaintext):
 
 
 def detect_oracle_ecb_or_cbc(ciphertext):
-    for sixteen_byte_sequence in [ciphertext[i : i + 16] for i in range(len(ciphertext) - 16)]:
+    for sixteen_byte_sequence in [ciphertext[i: i + 16] for i in range(len(ciphertext) - 16)]:
         if ciphertext.count(sixteen_byte_sequence) > 1:
             return "ECB", ciphertext
     return "CBC", ciphertext
 
 
-# f = open("Set 2\challenge10.txt", "r")
-# plaintext = decrypt_aes_cbc_mode(
-#     set1.base64_to_hex(f.read()), bytes("YELLOW SUBMARINE", "utf8"), b"\x00" * 16
-# ).decode("utf8")
-# f.close()
-# encryption_type, ciphertext = encrypt_ecb_or_cbc_oracle(bytes(plaintext, "utf8"))
-# print(encryption_type)
-# encryption_type, _ = detect_oracle_ecb_or_cbc(ciphertext)
-# print(encryption_type)
+f = open("Set 2\challenge10.txt", "r")
+plaintext = decrypt_aes_cbc_mode(
+    set1.base64_to_hex(f.read()), bytes(
+        "YELLOW SUBMARINE", "utf8"), b"\x00" * 16
+).decode("utf8")
+f.close()
+encryption_type, ciphertext = encrypt_ecb_or_cbc_oracle(
+    bytes(plaintext, "utf8"))
+print(encryption_type)
+encryption_type, _ = detect_oracle_ecb_or_cbc(ciphertext)
+print(encryption_type)
