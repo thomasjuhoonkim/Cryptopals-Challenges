@@ -1,6 +1,3 @@
-import binascii
-
-
 def pkcs7_pad(plaintext, block_size=16):
     assert type(plaintext) == bytes, "Plaintext must be in bytes"
     assert block_size > 0 and type(

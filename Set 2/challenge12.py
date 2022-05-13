@@ -64,6 +64,6 @@ def byte_at_a_time_ecb_decryption(oracle_function):
     return plaintext
 
 
-key = random_block_of_bytes(16)
-plaintext = byte_at_a_time_ecb_decryption(byte_at_a_time_ecb_oracle)
-print(plaintext.decode("utf8"))
+# key = random_block_of_bytes(16)
+# plaintext = byte_at_a_time_ecb_decryption(byte_at_a_time_ecb_oracle)
+# print(plaintext.decode("utf8"))
