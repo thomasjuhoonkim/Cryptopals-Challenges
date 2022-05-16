@@ -48,60 +48,37 @@ def ecb_oracle(email=""):
 def decrypt_profile(encrypted_bytes):
     global key
     user_profile_unparsed = set1.decrypt_aes_ecb_mode(encrypted_bytes, key)
+    user_profile_unparsed = pkcs7_unpad(user_profile_unparsed)
     return kv_str_to_dict(user_profile_unparsed)
 
 
-def detect_profile_block_size(ecb_oracle):
-    plaintext_size = 1
-    ciphertext_size = len(ecb_oracle('A'*plaintext_size))
+def attacker_interface():
+    email_length = 0
     while True:
-        plaintext_size += 1
-        new_ciphertext_size = len(ecb_oracle('A'*plaintext_size))
-        if ciphertext_size != new_ciphertext_size:
-            return new_ciphertext_size - ciphertext_size
-        else:
-            ciphertext_size = new_ciphertext_size
-            continue
-
-
-def attacker_interface(email):
-    block_size = detect_profile_block_size(ecb_oracle)
-    ciphertext1 = ecb_oracle(email)
-    ciphertext2 = ecb_oracle('X'*len(email))
-    # find the substring that is both in ciphertext1 and ciphertext2
-    common_element = b''
-    common_element_start = 0
-    for i in range(len(ciphertext1), -1, -1):
-        if ciphertext1[i:] != ciphertext2[i:]:
-            common_element = ciphertext1[i+1:]
-            common_element_start = i+1
+        if len(ecb_oracle('A'*email_length)) != len(ecb_oracle('A'*(email_length+1))):
             break
-    # determine what "admin" looks like under encryption at the position of user
-    USER_START = len("email=")+len(email)+len("&uid=10&role=")
-    PADDING_START = USER_START+len("admin")
-    ciphertext3 = ecb_oracle('X'*USER_START+"admin")
-    admin_ciphertext = ciphertext3[USER_START:USER_START+5]
-    # determine what padding looks like under encryption
-    padding_ciphertext = ecb_oracle(email+"X")[PADDING_START:]
-    # output consolidated decrypted ciphertext
-    encrypted_bytes = ciphertext1[:USER_START] + \
-        admin_ciphertext+padding_ciphertext
+        email_length += 1
+    # email_length + 4 so that "user" starts on new block
+    email_length += 4
+
+    # get email such that it is email_length characters long
+    print(f"Email Length: {email_length}")
+    email = ""
+    while len(email) != email_length:
+        email = input("Email: ")
+
+    # retrieve ciphertext without user portion
+    ciphertext_without_user = ecb_oracle(email)[:32]
+    # admin\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b is the new block
+    ciphertext_padding = ecb_oracle(
+        'A'*10 + "admin\v\v\v\v\v\v\v\v\v\v\v")[16:32]
+
+    # consolidate ciphertext parts and decrypt
     global key
-    padding = pkcs7_pad(
-        bytes("email=thomas@grobo.ca&uid=10&role=admin", "utf8"))
-    print(set1.encrypt_aes_ecb_mode(padding, key))
-    print(padding)
-    print(bytes([padding[PADDING_START]]))
-    print(encrypted_bytes)
-    print(len(encrypted_bytes))
-    # plaintext = decrypt_profile(encrypted_bytes)
-    # print(plaintext)
-    # 14
-    # email=thomas@grobo.ca&uid=10&role=admin\x09\x09\x09\x09\x09\x09\x09\x09\x09
-    # 39
-    # 16 characters off
+    new_ciphertext = ciphertext_without_user + ciphertext_padding
+    return decrypt_profile(new_ciphertext)
 
 
 key = random_block_of_bytes(16)
-email = "thomas@grobo.ca"
-attacker_interface(email)
+decrypted_profile = attacker_interface()
+print(decrypted_profile)
