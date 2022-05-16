@@ -40,7 +40,6 @@ def profile_for(email):
 
 def ecb_oracle(email=""):
     global key
-    # assert email == str, "Email must be a string"
     user_input = profile_for(email)
     padded_bytes = pkcs7_pad(user_input)
     return set1.encrypt_aes_ecb_mode(padded_bytes, key)
@@ -85,10 +84,22 @@ def attacker_interface(email):
     # determine what padding looks like under encryption
     padding_ciphertext = ecb_oracle(email+"X")[PADDING_START:]
     # output consolidated decrypted ciphertext
-    encrypted_bytes = bytes(
-        ciphertext1[:USER_START]+admin_ciphertext+padding_ciphertext)
-    plaintext = decrypt_profile(encrypted_bytes)
-    print(plaintext)
+    encrypted_bytes = ciphertext1[:USER_START] + \
+        admin_ciphertext+padding_ciphertext
+    global key
+    padding = pkcs7_pad(
+        bytes("email=thomas@grobo.ca&uid=10&role=admin", "utf8"))
+    print(set1.encrypt_aes_ecb_mode(padding, key))
+    print(padding)
+    print(bytes([padding[PADDING_START]]))
+    print(encrypted_bytes)
+    print(len(encrypted_bytes))
+    # plaintext = decrypt_profile(encrypted_bytes)
+    # print(plaintext)
+    # 14
+    # email=thomas@grobo.ca&uid=10&role=admin\x09\x09\x09\x09\x09\x09\x09\x09\x09
+    # 39
+    # 16 characters off
 
 
 key = random_block_of_bytes(16)
