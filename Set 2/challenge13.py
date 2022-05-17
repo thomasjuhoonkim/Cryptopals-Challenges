@@ -79,6 +79,7 @@ def attacker_interface():
     return decrypt_profile(new_ciphertext)
 
 
-key = random_block_of_bytes(16)
-decrypted_profile = attacker_interface()
-print(decrypted_profile)
+if __name__ == "__main__":
+    key = random_block_of_bytes(16)
+    decrypted_profile = attacker_interface()
+    print(decrypted_profile)
