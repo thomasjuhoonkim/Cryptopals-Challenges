@@ -1,9 +1,3 @@
-# import sys, importlib
-# sys.path.append("C:/Users/Thomas Kim/Desktop/Code/Cryptopals Challenges/Set 1")
-# set1 = importlib.import_module("set1")
-# string_hex = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
-# print(bytes(set1.hex_to_base64(string_hex).decode("utf-8"), "utf8"))
-
 import set1
 from challenge9 import pkcs7_pad, pkcs7_unpad
 from Crypto.Cipher import AES
