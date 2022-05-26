@@ -77,6 +77,7 @@ def encrypt_aes_cbc_mode(plaintext, key, initialization_vector):
     assert len(key) == 16, "Key is not 128 bits"
     assert type(plaintext) == bytes, "Plaintext must be in bytes"
     plaintext_blocks = bytes_to_padded_blocks(plaintext, 16)
+    # print("Plaintext with Padding: ", b''.join(plaintext_blocks))
     ciphertext_blocks = [bytes()] * len(plaintext_blocks)
     for i in range(len(plaintext_blocks)):
         if i == 0:
@@ -106,7 +107,6 @@ def decrypt_aes_cbc_mode(ciphertext, key, initialization_vector):
         else:
             plaintext_blocks[i] = set1.fixed_xor(
                 plaintext_blocks[i], ciphertext_blocks[i-1])
-    # return pkcs7_unpad(b''.join(plaintext_blocks))
     return b''.join(plaintext_blocks)
 
 # f = open("Set 2/challenge10.txt", "r")
@@ -122,6 +122,7 @@ def decrypt_aes_cbc_mode(ciphertext, key, initialization_vector):
 # print(AES.new(bytes(key, "utf8"), AES.MODE_CBC,
 #       initialization_vector).decrypt(ciphertext).decode("utf8"))
 
+
 # key = "Bitch ass dwbaek"
 # initialization_vector = b'\x00' * 16
 # plaintext = "Hello my name is Thomas Kim and I am an aspiring cryptographer."
@@ -133,7 +134,7 @@ def decrypt_aes_cbc_mode(ciphertext, key, initialization_vector):
 # print("Initialization Vector: " + str(initialization_vector))
 # print("Key: " + key)
 # print("Ciphertext: " + str(ciphertext))
-# print("Plaintext After Decryption: " + plaintext_decrypt.decode("utf8"))
+# print("Plaintext After Decryption: ", plaintext_decrypt)
 
 
 """
