@@ -62,17 +62,17 @@ def cbc_attacker_interface(ciphertext):
             byte = bytes([byte_int])
             print("XOR Block Before:  ", xor_block)
             print(len(xor_block))
-            new_last_bytes = b''.join(bytes([(pt_byte ^ xor_byte ^ desired_padding)])
-                                      for pt_byte, xor_byte in zip(plaintext[:len(plaintext) % 16], xor_block[-desired_padding+1:]))  # continue here
+            new_last_bytes = b''.join(
+                bytes([pt_byte ^ xor_byte ^ desired_padding]) for pt_byte, xor_byte in zip(plaintext[:len(plaintext) % 16], xor_block[-desired_padding+1:])
+            )  # continue here
             print("New Last Bytes:    ", new_last_bytes)
-            xor_block_new = xor_block[:-desired_padding] + \
-                byte + new_last_bytes
+            xor_block_new = xor_block[:-desired_padding] + byte + new_last_bytes
             print("XOR Block After:   ", xor_block_new)
             print(len(xor_block_new))
             print("Ciphertext Before: ", ciphertext)
             ciphertext_new = ciphertext[:block_start-16] + xor_block_new + \
                 ciphertext[block_start:block_start+16] if block_start > 0 \
-                else ciphertext[:block_start+16]
+                else ciphertext[:16]
             print("Ciphertext After:  ", ciphertext_new)
             oracle_iv = random_iv
             if block_start == 0:
